@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <title>功能实现</title>
+
+</head>
+
+<body>
+
+<div class="container">
+    <div class="left">
+        <h2>左侧区域</h2>
+        <button id="manage-btn" class="manage-button">源数据管理</button>
+        <button id="test-effect-btn">效果测试</button> <!-- 新增的按钮 -->
+    </div>
+    <div class="right">
+        <h2>右侧区域</h2>
+        <div id="data-management-content" class="right-content">
+            <!-- 源数据管理的内容 -->
+            <button id="new-btn">+新建源连接</button>
+            <!-- 搜索框的内容 -->
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="搜索名称...">
+                <button id="search-btn"><i class="fas fa-search"></i></button>
+            </div>
+
+            <!-- 批量删除 -->
+            <button id="delete-btn">批量删除</button>
+
+            <!-- table 显示 -->
+            <table id="ssh-connections-table">
+                <thead>
+                <tr>
+                    <th><label for="select-all"></label><input type="checkbox" id="select-all"></th>
+                    <th>名称</th>
+                    <th>创建时间</th>
+                    <th>描述</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody id="ssh-connections-table-body">
+                <!-- 行数据将被插入到这里 -->
+                </tbody>
+            </table>
+
+        </div>
+        <div id="test-effect-content" class="right-content">
+            <!-- 效果测试的内容，你可以根据需求填充内容 -->
+            <!-- 产品选择 -->
+            <button id="product-select-btn">产品选择</button>
+
+            <!-- table 显示 -->
+            <table id="product-table">
+                <thead>
+                <tr>
+                    <th><label for="product-select-all"></label><input type="checkbox" id="product-select-all"></th>
+                    <th>产品名称</th>
+                    <th>任务名称</th>
+                    <th>创建时间</th>
+                    <th>参数设置</th>
+                    <th>前置依赖</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody id="product-table-body">
+                <!-- 行数据将被插入到这里 -->
+                </tbody>
+            </table>
+
+
+
+        </div>
+    </div>
+</div>
+
+
+
+<dialog id="dialog">
+    <form method="dialog">
+        <h1 class="dialog-title">新建SSH源连接</h1>
+
+        <label><span class="label-text required-field">*名称：</span><input class="input-field" type="text" id="name" name="name"></label>
+        <label><span class="label-text">描述：</span><input class="input-field" type="text" id="description" name="description"></label>
+        <label><span class="label-text required-field">*主机：</span><input class="input-field" type="text" id="host" name="host"></label>
+        <label><span class="label-text required-field">*端口：</span><input class="input-field" type="text" id="port" name="port"></label>
+        <label><span class="label-text required-field">*用户名：</span><input class="input-field" type="text" id="username" name="username"></label>
+        <label><span class="label-text required-field">*密码：</span><input class="input-field" type="password" id="password" name="password"></label>
+
+        <menu>
+            <button value="cancel">取消</button>
+            <button id="test-btn" type="button">测试连通性</button>
+            <button id="confirm-btn" value="submit">确定</button>
+        </menu>
+    </form>
+</dialog>
+
+
+<dialog id="alert-dialog" class="alert-dialog">
+    <p id="alert-message"></p>
+</dialog>
+
+
+<dialog id="product-dialog">
+    <form method="dialog">
+        <h1 class="dialog-title">请选择对应产品</h1>
+        <div class="product-category">
+            <h3><span class="blue-bar">|</span> 智能客服类产品</h3>
+            <button class="product-button" id="unit-button">UNIT</button>
+            <button class="product-button">CSKB</button>
+        </div>
+        <div class="product-category">
+            <h3><span class="blue-bar">|</span> 大数据类产品</h3>
+            <button class="product-button">BMR</button>
+            <button class="product-button">EDAP</button>
+            <button class="product-button">Doris</button>
+        </div>
+        <menu>
+            <div class="menu-right">
+                <button value="cancel">取消</button>
+            </div>
+        </menu>
+    </form>
+</dialog>
+
+
+
+<!-- 这个是unit产品-参数设置的对话框，在这里花费了2个小时的调试 -->
+<dialog id="unit-dialog">
+    <form method="dialog">
+        <h1 class="dialog-title-large">UNIT参数设置</h1>
+        <label><span class="label-text-small">任务名称：</span><input class="input-field" type="text" id="jobname" name="jobname"></label>
+        <label><span class="label-text-small">Endpoint-域名：</span><input class="input-field" type="text" id="endpoint" name="endpoint"></label>
+        <label><span class="label-text-small">Api-接口：</span><input class="input-field" type="text" id="api" name="api"></label>
+        <label><span class="label-text-small">Authorization-鉴权码：</span><input class="input-field" type="text" id="authorization" name="authorization"></label>
+        <label><span class="label-text-small">Parallel-并发数：</span><input class="input-field" type="text" id="parallel" name="parallel"></label>
+
+        <menu>
+            <div class="menu-right">
+                <button id="previous-step-button" value="previous">上一步</button>
+                <button value="cancel">取消</button>
+                <button id="unit-confirm-btn" value="submit">确定</button>
+            </div>
+        </menu>
+    </form>
+</dialog>
+
+
+
+
+
+
+<script src="JS_Button/unit-confirm-btn.js"></script>
+<script src="JS_Button/unit-button.js"></script>
+<script src="JS_Button/product-select-btn.js"></script>
+<script src="JS_Button/confirm-btn.js"></script>
+<script src="JS_Button/manage-btn.js"></script>
+<script src="JS_Button/search-btn.js"></script>
+<script src="JS_Button/test-effect-btn.js"></script>
+<script src="JS_Functions/isNameExist.js"></script>
+<script src="JS_Functions/loadData.js"></script>
+<script src="JS_Functions/openEditDialog.js"></script>
+<script src="JS_Functions/showAlert.js"></script>
+<script src="main.js"></script>
+
+
+</body>
+</html>

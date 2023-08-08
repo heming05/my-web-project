@@ -1,0 +1,228 @@
+.container {
+    display: flex;
+}
+.left {
+    flex: 1;  /* 减小左侧区域，使其占比为1/10 */
+    background-color: #f0f0f0;
+}
+.right {
+    flex: 9;  /* 增大右侧区域，使其占比为9/10 */
+    background-color: #d0d0f0;
+}
+.right-content {
+    display: none;
+}
+
+/* 添加搜索框 开始*/
+.search-container {
+    position: relative;
+    display: inline-block; /* 让容器和其他元素同一行 */
+}
+
+#search-input {
+    padding: 5px;
+    padding-right: 30px; /* 为内部的搜索按钮腾出空间 */
+    border: 1px solid #ccc;
+    width: 200px; /* 根据你的需要设置宽度 */
+}
+
+#search-btn {
+    position: absolute;
+    right: 0; /* 将按钮定位在输入框的右侧 */
+    top: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 7px; /* 调整为适合输入框的大小 */
+    color: #888; /* 你可以根据需要调整颜色 */
+}
+
+#search-btn:hover {
+    color: #555; /* 当鼠标悬停时的颜色 */
+}
+
+/* 添加搜索框 结束*/
+
+
+
+
+dialog {
+    width: 500px;
+}
+.dialog-title {
+    font-size: 1em;
+}
+
+/* 新增的CSS规则 */
+label {
+    display: flex;
+    justify-content: space-between;
+    max-width: 500px;  /* 根据需要设置合适的宽度 */
+    margin-bottom: 10px;  /* 这会在每个标签下方添加10像素的间隙 */
+}
+
+.label-text {
+    flex: 1;
+}
+
+.input-field {
+    flex: 4;
+    width: 30%;  /* 减小输入框的宽度 */
+    margin-left: 2px;  /* 为输入框和标签文字之间添加一些空间 */
+}
+
+.required-field {
+    color: red;
+    font-weight: bold;
+}
+/* 新增的CSS规则结束 */
+
+
+/* ssh-connections-table 样式设置开始 */
+
+#ssh-connections-table {
+    width: 100%; /* 使表格宽度与右侧区域相同 */
+    border-collapse: collapse; /* 删除表格间距 */
+}
+
+#ssh-connections-table th {
+    text-align: center; /* 使表头文字居中 */
+    border: 1px solid #dddddd; /* 添加边框 */
+    padding: 8px; /* 增加内边距 */
+}
+
+#ssh-connections-table td {
+    text-align: center; /* 使单元格文本居中 */
+    border: 1px solid #dddddd; /* 添加边框 */
+    padding: 8px; /* 增加内边距 */
+}
+
+#ssh-connections-table input[type="checkbox"] {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ssh-connections-table 样式设置结束 */
+
+
+.alert-dialog {
+    position: absolute;
+    top: 50%;  // 调整这个值可以改变对话框距离顶部的距离
+left: 75%;  // 调整这个值可以改变对话框距离左侧的距离
+width: 50%;  // 对话框的宽度
+height: auto;  // 对话框的高度，设置为auto可以让对话框的高度自适应内容
+transform: translate(-50%, -50%);  // 使用transform可以使对话框以其中心点定位，而不是其左上角
+}
+
+/* 从这里开始，以下是效果测试的风格 */
+.left button {
+    margin-bottom: 50px; /* 设置按钮之间的间隙，你可以根据需要调整值 */
+}
+
+.manage-button {
+    margin-bottom: 50px; /* 根据需要调整间隙的大小 */
+}
+
+/*产品选择-开始*/
+
+.dialog-title {
+    font-size: 24px; /* 根据需要调整大小 */
+}
+
+.product-category h3 {
+    font-size: 18px; /* 根据需要调整大小 */
+    margin-bottom: 10px;
+}
+
+.product-button {
+    margin: 5px;
+}
+
+.blue-bar {
+    color: blue;
+}
+
+menu {
+    display: flex;
+    justify-content: flex-end; /* 将内容对齐到容器的末端 */
+}
+
+.menu-right {
+    align-self: flex-end; /* 将内容对齐到容器的底部 */
+}
+
+/*产品选择-结束*/
+
+
+
+/*智能客服unit产品-开始*/
+.dialog-title-large {
+    font-size: 20px; /* 调整字体大小 */
+}
+
+.label-text-small {
+    font-size: 14px; /* 调整字体大小 */
+}
+
+menu {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.menu-right {
+    align-self: flex-end;
+}
+/*智能客服unit产品-结束*/
+
+
+
+
+
+
+
+
+
+
+
+/*效果测试-右侧区域展示-样式设置-开始*/
+
+
+
+/* product-table 样式设置开始 */
+
+#product-table {
+    width: 100%; /* 使表格宽度与右侧区域相同 */
+    border-collapse: collapse; /* 删除表格间距 */
+    table-layout: fixed; /* 新增的属性 */
+}
+
+#product-table th {
+    text-align: center; /* 使表头文字居中 */
+    border: 1px solid #dddddd; /* 添加边框 */
+    padding: 8px; /* 增加内边距 */
+    word-wrap: break-word;  /* 在单元格内容太长时进行换行 */
+}
+
+#product-table td {
+    text-align: center; /* 使单元格文本居中 */
+    border: 1px solid #dddddd; /* 添加边框 */
+    padding: 8px; /* 增加内边距 */
+    word-wrap: break-word;  /* 在单元格内容太长时进行换行 */
+}
+
+#product-table input[type="checkbox"] {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+/* product-table 样式设置结束 */
+
+
+
+
+/*效果测试-右侧区域展示-样式设置-结束*/
+
+
+
+

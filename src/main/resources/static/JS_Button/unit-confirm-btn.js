@@ -43,6 +43,7 @@ document.getElementById('unit-confirm-btn').addEventListener('click', function(e
             const selectCell = newRow.insertCell();
             const selectCheckbox = document.createElement('input');
             selectCheckbox.type = 'checkbox';
+            selectCheckbox.name = 'productCheckbox';  // 设置名称
             selectCell.appendChild(selectCheckbox);
 
             const productNameCell = newRow.insertCell();

@@ -52,6 +52,13 @@
             <!-- 产品选择 -->
             <button id="product-select-btn">产品选择</button>
 
+            <!-- 新增的搜索框的内容 -->
+            <div class="search-container">
+                <input type="text" id="effect-search-input" placeholder="搜索任务名称...">
+                <button id="effect-search-btn" class="inner-search-icon"><i class="fas fa-search"></i></button>
+            </div>
+
+
             <!-- table 显示 -->
             <table id="product-table">
                 <thead>
@@ -147,24 +154,28 @@
     </form>
 </dialog>
 
+<!--  全局变量 -->
 
 
 
 
-<script src="JS_Functions/effect_test_loadData.js"></script>
-<script src="JS_Button/product-tab-select-all.js"></script>
-<script src="JS_Button/unit-confirm-btn.js"></script>
-<script src="JS_Button/unit-button.js"></script>
-<script src="JS_Button/product-select-btn.js"></script>
-<script src="JS_Button/confirm-btn.js"></script>
-<script src="JS_Button/manage-btn.js"></script>
-<script src="JS_Button/search-btn.js"></script>
-<script src="JS_Button/test-effect-btn.js"></script>
-<script src="JS_Functions/isNameExist.js"></script>
-<script src="JS_Functions/loadData.js"></script>
-<script src="JS_Functions/openEditDialog.js"></script>
-<script src="JS_Functions/showAlert.js"></script>
-<script src="main.js"></script>
+<!-- 效果测试-点击参数设置按钮，通过jobName打开unit对话框-->
+<script  src="JS_Functions/openUnitDialogWithJobName.js"></script>
+<script  src="JS_Button/effect-search-btn.js"></script>
+<script  src="JS_Functions/effect_test_loadData.js"></script>
+<script  src="JS_Button/product-tab-select-all.js"></script>
+<script  src="JS_Button/unit-confirm-btn.js"></script>
+<script  src="JS_Button/unit-button.js"></script>
+<script  src="JS_Button/product-select-btn.js"></script>
+<script  src="JS_Button/confirm-btn.js"></script>
+<script  src="JS_Button/manage-btn.js"></script>
+<script  src="JS_Button/search-btn.js"></script>
+<script  src="JS_Button/test-effect-btn.js"></script>
+<script  src="JS_Functions/isNameExist.js"></script>
+<script  src="JS_Functions/loadData.js"></script>
+<script  src="JS_Functions/openEditDialog.js"></script>
+<script  src="JS_Functions/showAlert.js"></script>
+<script  src="main.js"></script>
 
 
 </body>

@@ -6,6 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class EffectTestService {
 
@@ -22,6 +24,10 @@ public class EffectTestService {
 
     public Page<EffectTestEntity> findAll(Pageable pageable) {
         return effectTestRepository.findAll(pageable); // 修正了这里
+    }
+
+    public Optional<EffectTestEntity> findByJobName(String jobName) {
+        return effectTestRepository.findByJobname(jobName);
     }
 
 }

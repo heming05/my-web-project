@@ -3,8 +3,8 @@
 
 
     document.getElementById('select-all').addEventListener('change', function() {
-    var checkboxes = document.querySelectorAll('#ssh-connections-table tbody input[type="checkbox"]');
-    checkboxes.forEach(checkbox => checkbox.checked = this.checked);
+        const checkboxes = document.querySelectorAll('#ssh-connections-table tbody input[type="checkbox"]');
+        checkboxes.forEach(checkbox => checkbox.checked = this.checked);
 });
 
 
@@ -56,15 +56,18 @@
 
 
     // 初始化全局变量
-    var selectedProduct = "";
+    let selectedProduct = "";
 
     // 为每个按钮添加点击事件处理器
-    var buttons = document.querySelectorAll(".product-button");
+    const buttons = document.querySelectorAll(".product-button");
     buttons.forEach(function(button) {
         button.addEventListener("click", function() {
             selectedProduct = this.innerText;  // 更新全局变量
         });
     });
+
+    // 初始化全局变量
+    let isEditofEffect = false; // 在全局范围内引入状态变量
 
 
 

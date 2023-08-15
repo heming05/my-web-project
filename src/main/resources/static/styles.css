@@ -244,6 +244,38 @@ menu {
 
 
 
+/* 放大镜 样式设置开始 */
+.search-container {
+    position: relative;
+}
+
+.inner-search-icon {
+    background: none;
+    border: none;
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    outline: none; /* 隐藏默认的边框焦点样式 */
+}
+
+.inner-search-icon i {
+    color: #aaa;
+}
+
+#effect-search-input {
+    padding-right: 25px;  /* 为放大镜图标留出空间 */
+}
+
+/* 当鼠标悬停在按钮上时，改变放大镜图标的颜色 */
+.inner-search-icon:hover i {
+    color: #000; /* 黑色 */
+}
+
+
+/* 放大镜 样式设置结束 */
+
 
 /*效果测试-右侧区域展示-样式设置-结束*/
 

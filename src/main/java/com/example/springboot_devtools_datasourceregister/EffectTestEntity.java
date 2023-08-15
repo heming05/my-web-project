@@ -19,6 +19,7 @@ public class EffectTestEntity {
     private String authorization;
     private String parallel;
 
+
     @Column(name = "create_time")
     @Temporal(TemporalType.TIMESTAMP)
     private Date create_time = new Date();
@@ -87,4 +88,6 @@ public class EffectTestEntity {
     public Date getCreateTime() {
         return create_time;
     }
+
+
 }

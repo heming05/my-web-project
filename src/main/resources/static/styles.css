@@ -230,13 +230,13 @@ menu {
     width: 15%;
 }
 #product-table th:nth-child(5) {
-    width: 20%;
+    width: 15%;
 }
 #product-table th:nth-child(6) {
-    width: 20%;
+    width: 15%;
 }
 #product-table th:nth-child(7) {
-    width: 15%;
+    width: 25%;
 }
 
 
@@ -275,6 +275,26 @@ menu {
 
 
 /* 放大镜 样式设置结束 */
+
+
+/* 分页 样式设置开始 */
+.table-container {
+    position: relative;
+    display: inline-block;
+}
+
+
+.pagination-buttons {
+    position: absolute;
+    bottom: 50px; /* 原本是10px，现在提高到50px */
+    right: 10px;
+    display: flex;
+    gap: 10px;
+}
+
+
+/* 分页 样式设置结束 */
+
 
 
 /*效果测试-右侧区域展示-样式设置-结束*/

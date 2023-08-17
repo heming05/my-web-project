@@ -61,6 +61,7 @@ document.getElementById('unit-confirm-btn').addEventListener('click', function(e
                 const jobNameCell = newRow.insertCell();
                 jobNameCell.innerText = jobname;
 
+
                 // Create time cell
                 const createTimeCell = newRow.insertCell();
                 createTimeCell.innerText = formattedTime;
@@ -76,33 +77,73 @@ document.getElementById('unit-confirm-btn').addEventListener('click', function(e
 
                 // Pre Dependency cell
                 const preDependencyCell = newRow.insertCell();
-                const preDependencyButton1 = document.createElement('button');
-                preDependencyButton1.innerText = '上传标准问';
-                preDependencyButton1.onclick = function() {
+                const preDependencyButton = document.createElement('button');
+                preDependencyButton.innerText = '上传标准问和标准答';
+                preDependencyButton.onclick = function() {
                     // Here you can add logic for uploading standard questions
                 }
-                preDependencyCell.appendChild(preDependencyButton1);
-                const preDependencyButton2 = document.createElement('button');
-                preDependencyButton2.innerText = '上传标准答';
-                preDependencyButton2.onclick = function() {
-                    // Here you can add logic for uploading standard answers
-                }
-                preDependencyCell.appendChild(preDependencyButton2);
 
-                // Operation cell
+                preDependencyCell.appendChild(preDependencyButton);
+
+
+               // 操作-开始
                 const operationCell = newRow.insertCell();
-                const testExecutionButton = document.createElement('button');
-                testExecutionButton.innerText = '测试执行';
-                testExecutionButton.onclick = function() {
-                    // Here you can add logic to execute the test
+                operationCell.style.display = 'flex';
+                operationCell.style.flexDirection = 'column';
+                operationCell.style.justifyContent = 'space-between';
+                operationCell.style.paddingLeft = '50px';  // 设置左内边距为50px
+
+                // 创建包含"批跑执行"和"效果查看"按钮的<div>
+                const div1 = document.createElement('div');
+                div1.style.display = 'flex';
+                div1.style.justifyContent = 'flex-start';
+
+                const testTaskButton = document.createElement("button");
+                testTaskButton.innerText = "批跑执行";
+                testTaskButton.onclick = function() {
+                    // Here you can add logic to execute the test task
                 }
-                operationCell.appendChild(testExecutionButton);
-                const deleteTaskButton = document.createElement('button');
-                deleteTaskButton.innerText = '删除任务';
+                div1.appendChild(testTaskButton);
+
+                const viewEffectButton = document.createElement("button");
+                viewEffectButton.innerText = "效果查看";
+                viewEffectButton.onclick = function() {
+                    // Here you can add logic to view the effect
+                }
+                viewEffectButton.style.marginLeft = "50px";  // 设置间隔为50px
+                div1.appendChild(viewEffectButton);
+
+                operationCell.appendChild(div1);
+
+                // 创建包含"结果下载"和"删除任务"按钮的<div>
+                const div2 = document.createElement('div');
+                div2.style.display = 'flex';
+                div2.style.justifyContent = 'flex-start';
+
+                const downloadResultButton = document.createElement("button");
+                downloadResultButton.innerText = "结果下载";
+                downloadResultButton.onclick = function() {
+                    // Here you can add logic to download the result
+                }
+                div2.appendChild(downloadResultButton);
+
+                const deleteTaskButton = document.createElement("button");
+                deleteTaskButton.innerText = "删除任务";
                 deleteTaskButton.onclick = function() {
                     // Here you can add logic to delete the task
                 }
-                operationCell.appendChild(deleteTaskButton);
+                deleteTaskButton.style.marginLeft = "50px";  // 设置间隔为50px
+                div2.appendChild(deleteTaskButton);
+
+                operationCell.appendChild(div2);
+
+                // 设置两组按钮之间的间隔为10px
+                div2.style.marginTop = "10px";
+
+               // 操作-结束
+
+
+
             }
 
 

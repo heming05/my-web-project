@@ -161,6 +161,17 @@
 </dialog>
 
 
+<!-- 您可以在页面的任何适当位置添加模态窗口的代码 -->
+<div id="modal">
+    <div id="modal-content">
+        <h2>Verification Logs</h2>
+        <pre id="log" style="max-height:400px; overflow:auto;"></pre>
+        <button onclick="document.getElementById('modal').style.display='none';">Close</button>
+    </div>
+</div>
+
+
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
 

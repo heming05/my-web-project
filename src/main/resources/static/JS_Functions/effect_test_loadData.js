@@ -164,7 +164,11 @@ function effect_test_loadData(apiPath) {
                 operationCell.style.justifyContent = 'space-between';
                 operationCell.style.paddingLeft = '50px';  // 设置左内边距为50px
 
+
                 // 创建包含"批跑执行"和"效果查看"按钮的<div>
+
+                // 批跑执行-开始
+
                 const div1 = document.createElement('div');
                 div1.style.display = 'flex';
                 div1.style.justifyContent = 'flex-start';
@@ -172,9 +176,39 @@ function effect_test_loadData(apiPath) {
                 const testTaskButton = document.createElement("button");
                 testTaskButton.innerText = "批跑执行";
                 testTaskButton.onclick = function() {
-                    // Here you can add logic to execute the test task
+                    var xhr = new XMLHttpRequest();
+                    xhr.open("POST", "/unit_effect/startUnitVerify", true);
+                    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState == 4 && xhr.status == 200) {
+
+                            document.getElementById('log').textContent = xhr.responseText;
+                            document.getElementById('modal').style.display = 'block';
+
+                        } else if (xhr.readyState == 4) {
+                            alert("Failed to start verification. Status code: " + xhr.status);
+                        }
+                    };
+                    // 获取要执行的行
+                    const rowToExecute = this.closest("tr");
+                    // 获取任务名称的值
+                    const taskNameCell = rowToExecute.cells[2]; // 假设任务名称是第2个单元格
+                    const taskName = taskNameCell.textContent;
+
+                    // 创建一个JSON对象并将任务名称加入到其中
+                    const jsonBody = {
+                        "taskName": taskName
+                    };
+
+                    // 将JSON对象转换为字符串并发送
+                    xhr.send(JSON.stringify(jsonBody));
                 }
                 div1.appendChild(testTaskButton);
+
+
+                // 批跑执行-结束
+
+
 
                 const viewEffectButton = document.createElement("button");
                 viewEffectButton.innerText = "效果查看";

@@ -175,20 +175,12 @@ function effect_test_loadData(apiPath) {
 
                 const testTaskButton = document.createElement("button");
                 testTaskButton.innerText = "批跑执行";
+
+
                 testTaskButton.onclick = function() {
-                    var xhr = new XMLHttpRequest();
-                    xhr.open("POST", "/unit_effect/startUnitVerify", true);
-                    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-                    xhr.onreadystatechange = function () {
-                        if (xhr.readyState == 4 && xhr.status == 200) {
+                    // 显示对话框
+                    document.getElementById('modal').style.display = 'block';
 
-                            document.getElementById('log').textContent = xhr.responseText;
-                            document.getElementById('modal').style.display = 'block';
-
-                        } else if (xhr.readyState == 4) {
-                            alert("Failed to start verification. Status code: " + xhr.status);
-                        }
-                    };
                     // 获取要执行的行
                     const rowToExecute = this.closest("tr");
                     // 获取任务名称的值
@@ -200,9 +192,42 @@ function effect_test_loadData(apiPath) {
                         "taskName": taskName
                     };
 
-                    // 将JSON对象转换为字符串并发送
-                    xhr.send(JSON.stringify(jsonBody));
+                    // 发送POST请求到后端接口
+                    fetch("/unit_effect/startUnitVerify", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(jsonBody)
+                    }).then(response => response.json()).then(data => {
+                        console.log("Received response from backend:", data);
+                    }).catch(error => {
+                        console.error("Error sending request to backend:", error);
+                    });
+
+                    var socket = new WebSocket("ws://localhost:8080/ws-endpoint");
+                    socket.onmessage = function(event) {
+                        console.log("Received message: " + event.data); // 添加这一行
+                        document.getElementById('log').textContent += event.data + '\n';
+                    };
+                    socket.onopen = function(e) {
+                        console.log("WebSocket opened"); // 添加这一行
+                        socket.send(taskName);
+                    };
+
+                    socket.onmessage = function(event) {
+                        console.log("Received message: " + event.data); // 添加这一行
+                        document.getElementById('log').textContent += event.data + '\n';
+                    };
+
+                    socket.onerror = function(error) {
+                        console.log("WebSocket error: " + error); // 添加这一行
+                        alert(`WebSocket Error: ${error}`);
+                    };
                 }
+
+
+
                 div1.appendChild(testTaskButton);
 
 
@@ -210,15 +235,38 @@ function effect_test_loadData(apiPath) {
 
 
 
+
+
+                //效果查看-开始
+
                 const viewEffectButton = document.createElement("button");
                 viewEffectButton.innerText = "效果查看";
                 viewEffectButton.onclick = function() {
-                    // Here you can add logic to view the effect
-                }
+                    fetch('/unit_effect/getEffectData')
+                        .then(response => response.json())
+                        .then(data => {
+                            const content = document.getElementById('effect-content');
+                            content.innerHTML = `
+                <p>批次号: ${data.maxRunBatchNo}</p>
+                <p>批跑知识量总数: ${data.totalCount}</p>
+                <p>比对成功总数: ${data.successCount}</p>
+                <p>比对失败总数: ${data.failureCount}</p>
+                <p>比对百分比: ${data.percentage.toFixed(2)}%</p>
+            `;
+                            document.getElementById('effect-modal').style.display = 'block';
+                        })
+                        .catch(error => {
+                            console.error('Error fetching data:', error);
+                            alert('获取效果查看数据时发生错误！');
+                        });
+                };
                 viewEffectButton.style.marginLeft = "50px";  // 设置间隔为50px
                 div1.appendChild(viewEffectButton);
 
                 operationCell.appendChild(div1);
+
+
+                ////效果查看-结束
 
                 // 创建包含"结果下载"和"删除任务"按钮的<div>
                 const div2 = document.createElement('div');

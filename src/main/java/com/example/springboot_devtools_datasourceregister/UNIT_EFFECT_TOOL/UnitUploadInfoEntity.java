@@ -1,41 +1,29 @@
-package com.example.springboot_devtools_datasourceregister;
+package com.example.springboot_devtools_datasourceregister.UNIT_EFFECT_TOOL;
 
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "tianyin_unit_uploadinfo") // 注意更新了表名
-public class StandardQuestionEntity {
+@Table(name = "tianyin_unit_uploadinfo")
+public class UnitUploadInfoEntity {
+    // Assuming the fields are 'id', 'jobname', 'standard_query', 'standard_answer', and corresponding getters and setters
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String jobname;
-
     @Column(columnDefinition="TEXT")
-    private String standard_query; // 注意更新了字段名
-
+    private String standard_query;
     @Column(columnDefinition="TEXT")
-    private String standard_answer; // 新增的字段
-
-    // Getter and Setter for id
-    public Long getId() {
-        return id;
-    }
+    private String standard_answer;
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    // Getter and Setter for jobname
-    public String getJobname() {
-        return jobname;
+    public Long getId() {
+        return id;
     }
 
-    public void setJobname(String jobname) {
-        this.jobname = jobname;
-    }
-
-    // Getter and Setter for standard_query
     public String getStandard_query() {
         return standard_query;
     }
@@ -44,7 +32,6 @@ public class StandardQuestionEntity {
         this.standard_query = standard_query;
     }
 
-    // Getter and Setter for standard_answer
     public String getStandard_answer() {
         return standard_answer;
     }
@@ -52,4 +39,14 @@ public class StandardQuestionEntity {
     public void setStandard_answer(String standard_answer) {
         this.standard_answer = standard_answer;
     }
+
+    public String getJobname() {
+        return jobname;
+    }
+
+    public void setJobname(String jobname) {
+        this.jobname = jobname;
+    }
+
+    // Getters and setters
 }

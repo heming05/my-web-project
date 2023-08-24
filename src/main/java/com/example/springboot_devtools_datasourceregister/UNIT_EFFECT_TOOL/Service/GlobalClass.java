@@ -137,6 +137,23 @@ public class GlobalClass {
     }
 
 
+    public static String getStandardTime(long currentTimeMillis ){
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String formattedDate = sdf.format(new Date(currentTimeMillis));
+
+        return formattedDate;
+    }
+
+    public static long getBatchNo(long currentTimeMillis ){
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        String formatted = sdf.format(new Date(currentTimeMillis));
+
+        return Long.parseLong(formatted);
+    }
+
+
 
 
     //随机生成UUID
@@ -195,6 +212,16 @@ public class GlobalClass {
 
 
     }
+
+
+    public static String getListLine(List<String> querySegment, int i) {
+        if (querySegment == null || i < 0) {
+            return null; // 返回null或抛出异常，这取决于您如何处理无效的输入
+        }
+        int index = (i - 1) % querySegment.size(); // 使用模运算符来循环索引
+        return querySegment.get(index);
+    }
+
 
 
 

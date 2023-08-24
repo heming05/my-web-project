@@ -5,19 +5,28 @@ import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.example.springboot_devtools_datasourceregister.UNIT_EFFECT_TOOL.UnitDatabaseService;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import static com.example.springboot_devtools_datasourceregister.MyHandler.sendLog;
+
 @Service
 public class UnitCoreQueryApi {
 
-    public static String[] getResponse(String queryText) {
 
-        String endpoint="http://10.147.89.91:8826";
-        String api="/ngd/core/v3/query?channel=&debug=false&nlu=false";
+    public static String[] getResponse(String queryText,String taskName,int SeqNo,UnitDatabaseService unitDatabaseService) throws Exception {
+
+
+
+       // String endpoint="http://10.147.89.91:8826";
+
+        String endpoint=unitDatabaseService.getEndpoint(taskName);
+        //String api="/ngd/core/v3/query?channel=&debug=false&nlu=false";
+        String api=unitDatabaseService.getApi(taskName);
 
         //为了便于批量执行，采用Map格式的请求负载
         Map<String,Object> jsonBody =new HashMap<>();
@@ -35,6 +44,7 @@ public class UnitCoreQueryApi {
 
         String url = GlobalClass.getURLStandard(endpoint, api);
         System.out.println("url是:\n"+url);
+        //sendLog(taskName, "请求的url是:"+url);
         long start_time=System.currentTimeMillis();
 
         String  Authorization="a5430299-4331-4d26-9cde-42d65c326f84";
@@ -42,6 +52,7 @@ public class UnitCoreQueryApi {
         // 发送 POST 请求
         String resultData = sendPostRequest(url, Authorization, jsonBody);
         System.out.println("Result data: " + resultData);
+        sendLog(taskName, "第<"+SeqNo+">条标准问请求返回的Result data是:\n"+resultData);
 
         // 检查是否返回了 JSON 数据
         if (JSONUtil.isJson(resultData)) {

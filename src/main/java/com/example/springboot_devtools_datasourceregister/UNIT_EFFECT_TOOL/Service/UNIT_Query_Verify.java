@@ -1,78 +1,52 @@
 package com.example.springboot_devtools_datasourceregister.UNIT_EFFECT_TOOL.Service;
 
+import com.example.springboot_devtools_datasourceregister.UNIT_EFFECT_TOOL.TianyinUnitResultDataEntity;
+import com.example.springboot_devtools_datasourceregister.UNIT_EFFECT_TOOL.UnitDatabaseService;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import static com.example.springboot_devtools_datasourceregister.MyHandler.sendLog;
 
 @Service
 public class UNIT_Query_Verify {
 
-    public static void exec_easy(String fileNameOfQuery,String fileNameOfStandardAnswer,String fileName,int start,int end) throws IOException {
+    public static void exec_easy(List<String> querySegment, List<String> answerSegment, String taskName, UnitDatabaseService unitDatabaseService,long runBatchNo) throws Exception {
 
-        //首先创建一个CSV文件，并将首行写入
-        Map<String,Object> header =new HashMap<>();
+        for (int i = 0; i < querySegment.size(); i++) {
+            String queryText_i = querySegment.get(i);
+            sendLog(taskName, "第<" + (i + 1) + ">条标准问是:\n" + queryText_i);
 
-        //设置列名
-
-        header.put("1", "标准问query");
-
-        header.put("2", "标准答案");
-
-        header.put("3", "返回答案");
-
-        header.put("4","返回答案来源");
-
-        header.put("5", "返回状态码");
-
-
-        //CSV文件输出的路径
-        String path = "C:\\Users\\heming05\\Desktop\\data\\";
-        //文件名=生产的文件名称+时间戳
-
-        String fileNamePath="C:\\Users\\heming05\\Desktop\\data\\"+fileName;
-        CSV_Utils.deleteFiles(fileNamePath);
-        CSV_Utils.createCSVFile(path, fileName);
-
-        List exportData = new ArrayList();
-        exportData.add(header);
-
-
-        for(int i=start;i<=end;i++){
-            //读取第i行faq提问
-
-            String queryText_i=GlobalClass.readFileContent(fileNameOfQuery,i);
-            String[] logContent = UnitCoreQueryApi.getResponse(queryText_i);
+            String[] logContent = UnitCoreQueryApi.getResponse(queryText_i, taskName, i + 1, unitDatabaseService);
 
             String code_i = logContent[1];
             String msg = logContent[2];
-            String answerText_i=logContent[3];
-            String source_i=logContent[4];
+            String answerText_i = logContent[3];
+            String source_i = logContent[4];
+            String standardAnswerText_i = answerSegment.get(i);
 
+            boolean compareFlag=standardAnswerText_i.equals(answerText_i);
+            String compareResult;
+            if(compareFlag){
+                 compareResult="TRUE";
+            }else{
+                 compareResult="FALSE";
+            }
 
-            String StandardAnswerText_i=GlobalClass.readFileContent(fileNameOfStandardAnswer,i);
+            sendLog(taskName, "第<" + (i + 1) + ">条标准答是:\n" + standardAnswerText_i);
 
-            Map<String,Object> rows = new HashMap<>();
+            // 创建数据对象并存储到数据库中
+            TianyinUnitResultDataEntity resultData = new TianyinUnitResultDataEntity();
+            resultData.setJobname(taskName);
+            resultData.setStandardQuery(queryText_i);
+            resultData.setStandardAnswer(standardAnswerText_i);
+            resultData.setReturnedAnswer(answerText_i);
+            resultData.setAnswerSource(source_i);
+            resultData.setStatusCode(code_i);
+            resultData.setCompareResult(compareResult);
+            resultData.setRunBatchNo(runBatchNo);
 
-            rows.put("1", queryText_i);
-
-            rows.put("2", StandardAnswerText_i);
-
-            rows.put("3", answerText_i);
-
-            rows.put("4", source_i);
-
-            rows.put("5", code_i);
-
-            exportData.add(rows);
-
+            unitDatabaseService.saveResultData(resultData);  // 假设你在UnitDatabaseService里有一个saveResultData方法用于保存数据
         }
-
-        //将内容写入到csv文件中
-        CSV_Utils.addRecordsToCSVFile(exportData,header, path, fileName);
-
     }
 }

@@ -11,19 +11,20 @@ import static com.example.springboot_devtools_datasourceregister.MyHandler.sendL
 @Service
 public class UNIT_Query_Verify {
 
-    public static void exec_easy(List<String> querySegment, List<String> answerSegment, String taskName, UnitDatabaseService unitDatabaseService,long runBatchNo) throws Exception {
+    public static void exec_easy(List<String> querySegment, List<String> answerSegment, int start,int end,String taskName, UnitDatabaseService unitDatabaseService,long runBatchNo) throws Exception {
 
-        for (int i = 0; i < querySegment.size(); i++) {
-            String queryText_i = querySegment.get(i);
-            sendLog(taskName, "第<" + (i + 1) + ">条标准问是:\n" + queryText_i);
+        for (int i = start; i <= end; i++) {
+            String queryText_i = GlobalClass.getListLine(querySegment,i);
+            sendLog(taskName, "第<" + i + ">条标准问是:\n" + queryText_i);
+            System.out.println("第<" + i + ">条标准问是:\n" + queryText_i);
 
-            String[] logContent = UnitCoreQueryApi.getResponse(queryText_i, taskName, i + 1, unitDatabaseService);
+            String[] logContent = UnitCoreQueryApi.getResponse(queryText_i, taskName, i, unitDatabaseService);
 
             String code_i = logContent[1];
             String msg = logContent[2];
             String answerText_i = logContent[3];
             String source_i = logContent[4];
-            String standardAnswerText_i = answerSegment.get(i);
+            String standardAnswerText_i = GlobalClass.getListLine(answerSegment,i);
 
             boolean compareFlag=standardAnswerText_i.equals(answerText_i);
             String compareResult;
@@ -33,7 +34,8 @@ public class UNIT_Query_Verify {
                  compareResult="FALSE";
             }
 
-            sendLog(taskName, "第<" + (i + 1) + ">条标准答是:\n" + standardAnswerText_i);
+            sendLog(taskName, "第<" + i + ">条标准答是:\n" + standardAnswerText_i);
+            System.out.println("第<" + i + ">条标准答是:\n" + standardAnswerText_i);
 
             // 创建数据对象并存储到数据库中
             TianyinUnitResultDataEntity resultData = new TianyinUnitResultDataEntity();

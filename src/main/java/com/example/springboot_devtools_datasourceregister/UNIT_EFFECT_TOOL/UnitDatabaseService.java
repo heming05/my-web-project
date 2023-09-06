@@ -62,6 +62,15 @@ public class UnitDatabaseService {
         return "/ngd/core/v3/query?debug=false&nlu=false"; // 返回默认值，如果没有查询到任何数据
     }
 
+    public String getAuthorization (String jobname) {
+        List<TianyinWebEffectTestEntity> entities = tianyinWebEffectTestRepository.findByJobname(jobname);
+        if (entities != null && !entities.isEmpty()) {
+            return entities.get(0).getAuthorization();
+        }
+        return "/ngd/core/v3/query?debug=false&nlu=false"; // 返回默认值，如果没有查询到任何数据
+    }
+
+
 
     @Autowired
     private TianyinUnitResultDataRepository resultDataRepository;  // 假设你有一个JPA Repository

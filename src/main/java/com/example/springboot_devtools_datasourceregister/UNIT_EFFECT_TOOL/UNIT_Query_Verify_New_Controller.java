@@ -2,12 +2,22 @@ package com.example.springboot_devtools_datasourceregister.UNIT_EFFECT_TOOL;
 
 import com.example.springboot_devtools_datasourceregister.UNIT_EFFECT_TOOL.Service.GlobalClass;
 import com.example.springboot_devtools_datasourceregister.UNIT_EFFECT_TOOL.Service.UNIT_Query_Verify;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Semaphore;
+import java.util.logging.Logger;
 
 import static com.example.springboot_devtools_datasourceregister.MyHandler.sendLog;
 
@@ -15,6 +25,7 @@ import static com.example.springboot_devtools_datasourceregister.MyHandler.sendL
 @RestController
 @RequestMapping("/unit_effect")
 public class UNIT_Query_Verify_New_Controller {
+    private static final Logger logger = Logger.getLogger(UNIT_Query_Verify_New_Controller.class.getName());
 
     @Autowired
     private UnitDatabaseService unitDatabaseService;
@@ -78,7 +89,7 @@ public class UNIT_Query_Verify_New_Controller {
                     throw new RuntimeException(e);
                 }
                 try {
-                    UNIT_Query_Verify.exec_easy(querySegment, answerSegment,taskName,unitDatabaseService,runBatchNo);
+                    UNIT_Query_Verify.exec_easy(querySegment, answerSegment,start_i,end_i,taskName,unitDatabaseService,runBatchNo);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }finally {
@@ -121,4 +132,66 @@ public class UNIT_Query_Verify_New_Controller {
     public Map<String, Object> getEffectData() {
         return unitDatabaseService.getEffectData();
     }
+
+
+
+
+
+    //结果下载的controller在这里
+    @Autowired
+    private TianyinUnitResultDataRepository repository;
+
+    // 初始化具有10个许可的信号量
+    private final Semaphore semaphore = new Semaphore(20);
+
+    @GetMapping("/downloadResult")
+    public ResponseEntity<ByteArrayResource> downloadExcel(@RequestParam String jobname) throws Exception {
+        // 从信号量获取一个许可
+        semaphore.acquire();
+        try {
+            Long maxRunBatchNo = repository.findMaxRunBatchNo();
+            List<TianyinUnitResultDataEntity> data = repository.findByJobnameAndRunBatchNo(jobname, maxRunBatchNo);
+
+            Workbook workbook = new XSSFWorkbook();
+            Sheet sheet = workbook.createSheet("Results");
+
+            Row headerRow = sheet.createRow(0);
+            headerRow.createCell(0).setCellValue("Jobname");
+            headerRow.createCell(1).setCellValue("Run Batch No");
+            headerRow.createCell(2).setCellValue("Standard Query");
+            headerRow.createCell(3).setCellValue("Standard Answer");
+            headerRow.createCell(4).setCellValue("Returned Answer");
+            headerRow.createCell(5).setCellValue("Answer Source");
+            headerRow.createCell(6).setCellValue("Status Code");
+            headerRow.createCell(7).setCellValue("Compare Result");
+
+            int rowNum = 1;
+            for (TianyinUnitResultDataEntity entity : data) {
+                Row row = sheet.createRow(rowNum++);
+                row.createCell(0).setCellValue(entity.getJobname());
+                row.createCell(1).setCellValue(entity.getRunBatchNo());
+                row.createCell(2).setCellValue(entity.getStandardQuery());
+                row.createCell(3).setCellValue(entity.getStandardAnswer());
+                row.createCell(4).setCellValue(entity.getReturnedAnswer());
+                row.createCell(5).setCellValue(entity.getAnswerSource());
+                row.createCell(6).setCellValue(entity.getStatusCode());
+                row.createCell(7).setCellValue(entity.getCompareResult());
+            }
+
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            workbook.write(out);
+            workbook.close();
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=result.xlsx");
+
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(new ByteArrayResource(out.toByteArray()));
+        } finally {
+            // 释放许可
+            semaphore.release();
+        }
+    }
+
 }

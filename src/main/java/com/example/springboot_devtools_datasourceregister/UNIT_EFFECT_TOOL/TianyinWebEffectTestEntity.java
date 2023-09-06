@@ -17,6 +17,8 @@ public class TianyinWebEffectTestEntity {
 
     private String api;
 
+    private String authorization;
+
     public Long getId() {
         return id;
     }
@@ -24,7 +26,6 @@ public class TianyinWebEffectTestEntity {
     public void setId(Long id) {
         this.id = id;
     }
-
 
 
     public String getJobname() {
@@ -60,5 +61,13 @@ public class TianyinWebEffectTestEntity {
 
     public void setApi(String api) {
         this.api = api;
+    }
+
+    public String getAuthorization() {
+        return authorization;
+    }
+
+    public void setAuthorization(String authorization) {
+        this.authorization = authorization;
     }
 }

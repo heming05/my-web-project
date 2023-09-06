@@ -47,20 +47,22 @@ public class UnitCoreQueryApi {
         //sendLog(taskName, "请求的url是:"+url);
         long start_time=System.currentTimeMillis();
 
-        String  Authorization="a5430299-4331-4d26-9cde-42d65c326f84";
+        //String  Authorization="a5430299-4331-4d26-9cde-42d65c326f84";
+
+        String Authorization=unitDatabaseService.getAuthorization(taskName);
 
         // 发送 POST 请求
         String resultData = sendPostRequest(url, Authorization, jsonBody);
-        System.out.println("Result data: " + resultData);
         sendLog(taskName, "第<"+SeqNo+">条标准问请求返回的Result data是:\n"+resultData);
+        System.out.println("第<"+SeqNo+">条标准问请求返回的Result data是:\n"+resultData);
 
         // 检查是否返回了 JSON 数据
         if (JSONUtil.isJson(resultData)) {
             // 将 JSON 数据解析成 String
             String jsonString = JSONUtil.parseObj(resultData).toString();
-            System.out.println("JSON string: " + jsonString);
+            System.out.println("检查-第<"+SeqNo+">条标准问,正常返回了JSON数据: " + jsonString);
         } else {
-            System.out.println("Invalid response.");
+            System.out.println("检查-第<"+SeqNo+">条标准问,返回无效Invalid response.");
         }
 
 

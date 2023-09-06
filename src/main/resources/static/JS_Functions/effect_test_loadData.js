@@ -165,9 +165,11 @@ function effect_test_loadData(apiPath) {
                 operationCell.style.paddingLeft = '50px';  // 设置左内边距为50px
 
 
-                // 创建包含"批跑执行"和"效果查看"按钮的<div>
+
+
 
                 // 批跑执行-开始
+
 
                 const div1 = document.createElement('div');
                 div1.style.display = 'flex';
@@ -175,7 +177,6 @@ function effect_test_loadData(apiPath) {
 
                 const testTaskButton = document.createElement("button");
                 testTaskButton.innerText = "批跑执行";
-
 
                 testTaskButton.onclick = function() {
                     // 显示对话框
@@ -199,34 +200,28 @@ function effect_test_loadData(apiPath) {
                             "Content-Type": "application/json"
                         },
                         body: JSON.stringify(jsonBody)
-                    }).then(response => response.json()).then(data => {
-                        console.log("Received response from backend:", data);
+                    }).then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Server responded with status: ${response.statusText}`);
+                        }
                     }).catch(error => {
                         console.error("Error sending request to backend:", error);
                     });
 
                     var socket = new WebSocket("ws://localhost:8080/ws-endpoint");
                     socket.onmessage = function(event) {
-                        console.log("Received message: " + event.data); // 添加这一行
+                        console.log("Received message: " + event.data);
                         document.getElementById('log').textContent += event.data + '\n';
                     };
                     socket.onopen = function(e) {
-                        console.log("WebSocket opened"); // 添加这一行
+                        console.log("WebSocket opened");
                         socket.send(taskName);
                     };
-
-                    socket.onmessage = function(event) {
-                        console.log("Received message: " + event.data); // 添加这一行
-                        document.getElementById('log').textContent += event.data + '\n';
-                    };
-
                     socket.onerror = function(error) {
-                        console.log("WebSocket error: " + error); // 添加这一行
+                        console.log("WebSocket error: " + error);
                         alert(`WebSocket Error: ${error}`);
                     };
                 }
-
-
 
                 div1.appendChild(testTaskButton);
 
@@ -251,7 +246,7 @@ function effect_test_loadData(apiPath) {
                 <p>批跑知识量总数: ${data.totalCount}</p>
                 <p>比对成功总数: ${data.successCount}</p>
                 <p>比对失败总数: ${data.failureCount}</p>
-                <p>比对百分比: ${data.percentage.toFixed(2)}%</p>
+                <p>比对成功率: ${data.percentage.toFixed(2)}%</p>
             `;
                             document.getElementById('effect-modal').style.display = 'block';
                         })
@@ -264,21 +259,49 @@ function effect_test_loadData(apiPath) {
                 div1.appendChild(viewEffectButton);
 
                 operationCell.appendChild(div1);
+                //效果查看-结束
 
 
-                ////效果查看-结束
 
-                // 创建包含"结果下载"和"删除任务"按钮的<div>
+
+
+
+                // 结果下载-开始
+
+
                 const div2 = document.createElement('div');
                 div2.style.display = 'flex';
                 div2.style.justifyContent = 'flex-start';
 
                 const downloadResultButton = document.createElement("button");
                 downloadResultButton.innerText = "结果下载";
-                downloadResultButton.onclick = function() {
-                    // Here you can add logic to download the result
+
+                downloadResultButton.onclick = function(event) {
+                    // 显示模态框
+                    document.getElementById("downloadResult").style.display = "block";
+
+                    // 获取要执行的行
+                    const rowToExecute = this.closest("tr");
+                    // 获取任务名称的值
+                    const taskNameCell = rowToExecute.cells[2]; // 假设任务名称是第2个单元格
+                    const taskName = taskNameCell.textContent;
+
+                    // 下载Excel文件
+                    window.location.href = `/unit_effect/downloadResult?jobname=${taskName}`;
+
+                    // 使用延时隐藏模态框
+                    setTimeout(function() {
+                        document.getElementById("downloadResult").style.display = "none";
+                    }, 5000); // 延时5秒，这个时间可以根据实际情况进行调整
                 }
+
+
+
                 div2.appendChild(downloadResultButton);
+
+
+
+                // 结果下载-结束
 
 
                 // 删除任务--开始

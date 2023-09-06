@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public interface TianyinUnitResultDataRepository extends JpaRepository<TianyinUnitResultDataEntity, Long> {
@@ -16,5 +17,8 @@ public interface TianyinUnitResultDataRepository extends JpaRepository<TianyinUn
     Long countByRunBatchNo(Long runBatchNo);
 
     Long countByRunBatchNoAndCompareResult(Long runBatchNo, String compareResult);
+
+    List<TianyinUnitResultDataEntity> findByJobnameAndRunBatchNo(String jobname, Long runBatchNo);
+
 }
 

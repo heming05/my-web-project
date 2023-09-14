@@ -13,10 +13,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.*;
 import java.util.logging.Logger;
 
 import static com.example.springboot_devtools_datasourceregister.MyHandler.sendLog;
@@ -116,7 +116,7 @@ public class UNIT_Query_Verify_New_Controller {
             latch.await(); // 等待所有子线程完成
             long endTime=System.currentTimeMillis();
             sendLog(taskName, "\n##############################################################");
-            sendLog(taskName, "【本次多线程批跑测试，执行完成！！！】");
+            sendLog(taskName, "【本次多线程【线程数为:"+parallel+"】批跑任务，执行完成！！！】");
             sendLog(taskName, "【执行结束时间是:"+GlobalClass.getStandardTime(endTime)+"】");
             long consumerTime=endTime-startTime;
             sendLog(taskName, "【总耗时为: "+consumerTime/1000+" 秒(s)】");
@@ -141,57 +141,77 @@ public class UNIT_Query_Verify_New_Controller {
     @Autowired
     private TianyinUnitResultDataRepository repository;
 
-    // 初始化具有10个许可的信号量
-    private final Semaphore semaphore = new Semaphore(20);
 
     @GetMapping("/downloadResult")
     public ResponseEntity<ByteArrayResource> downloadExcel(@RequestParam String jobname) throws Exception {
-        // 从信号量获取一个许可
-        semaphore.acquire();
-        try {
-            Long maxRunBatchNo = repository.findMaxRunBatchNo();
-            List<TianyinUnitResultDataEntity> data = repository.findByJobnameAndRunBatchNo(jobname, maxRunBatchNo);
+        Long maxRunBatchNo = repository.findMaxRunBatchNo();
+        List<TianyinUnitResultDataEntity> data = repository.findByJobnameAndRunBatchNo(jobname, maxRunBatchNo);
 
-            Workbook workbook = new XSSFWorkbook();
-            Sheet sheet = workbook.createSheet("Results");
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Results");
 
-            Row headerRow = sheet.createRow(0);
-            headerRow.createCell(0).setCellValue("Jobname");
-            headerRow.createCell(1).setCellValue("Run Batch No");
-            headerRow.createCell(2).setCellValue("Standard Query");
-            headerRow.createCell(3).setCellValue("Standard Answer");
-            headerRow.createCell(4).setCellValue("Returned Answer");
-            headerRow.createCell(5).setCellValue("Answer Source");
-            headerRow.createCell(6).setCellValue("Status Code");
-            headerRow.createCell(7).setCellValue("Compare Result");
+        int threadCount = 10; // 使用10个线程
+        ExecutorService executor = Executors.newFixedThreadPool(threadCount);
+        List<Future<Void>> futures = new ArrayList<>();
 
-            int rowNum = 1;
-            for (TianyinUnitResultDataEntity entity : data) {
-                Row row = sheet.createRow(rowNum++);
-                row.createCell(0).setCellValue(entity.getJobname());
-                row.createCell(1).setCellValue(entity.getRunBatchNo());
-                row.createCell(2).setCellValue(entity.getStandardQuery());
-                row.createCell(3).setCellValue(entity.getStandardAnswer());
-                row.createCell(4).setCellValue(entity.getReturnedAnswer());
-                row.createCell(5).setCellValue(entity.getAnswerSource());
-                row.createCell(6).setCellValue(entity.getStatusCode());
-                row.createCell(7).setCellValue(entity.getCompareResult());
-            }
+        int size = data.size();
+        int eachSize = size / threadCount;
 
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            workbook.write(out);
-            workbook.close();
+        Row headerRow = sheet.createRow(0);
+        headerRow.createCell(0).setCellValue("Jobname");
+        headerRow.createCell(1).setCellValue("Run Batch No");
+        headerRow.createCell(2).setCellValue("Standard Query");
+        headerRow.createCell(3).setCellValue("Standard Answer");
+        headerRow.createCell(4).setCellValue("Returned Answer");
+        headerRow.createCell(5).setCellValue("Answer Source");
+        headerRow.createCell(6).setCellValue("Status Code");
+        headerRow.createCell(7).setCellValue("Compare Result");
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=result.xlsx");
 
-            return ResponseEntity.ok()
-                    .headers(headers)
-                    .body(new ByteArrayResource(out.toByteArray()));
-        } finally {
-            // 释放许可
-            semaphore.release();
+        for (int i = 0; i < threadCount; i++) {
+            final int start = i * eachSize;
+            final int end = i == threadCount - 1 ? size : start + eachSize;
+
+            Callable<Void> task = () -> {
+                for (int j = start; j < end; j++) {
+                    TianyinUnitResultDataEntity entity = data.get(j);
+                    int rowNum = j + 1; // Row numbers start from 1 as header is at 0
+
+                    synchronized(sheet) {
+                        Row row = sheet.createRow(rowNum);
+                        row.createCell(0).setCellValue(entity.getJobname());
+                        row.createCell(1).setCellValue(entity.getRunBatchNo());
+                        row.createCell(2).setCellValue(entity.getStandardQuery());
+                        row.createCell(3).setCellValue(entity.getStandardAnswer());
+                        row.createCell(4).setCellValue(entity.getReturnedAnswer());
+                        row.createCell(5).setCellValue(entity.getAnswerSource());
+                        row.createCell(6).setCellValue(entity.getStatusCode());
+                        row.createCell(7).setCellValue(entity.getCompareResult());
+                    }
+                }
+                return null;
+            };
+
+            Future<Void> future = executor.submit(task);
+            futures.add(future);
         }
-    }
 
+        for (Future<Void> future : futures) {
+            future.get();
+        }
+
+        executor.shutdown();
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        workbook.write(out);
+        workbook.close();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=result.xlsx");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(new ByteArrayResource(out.toByteArray()));
+
+    }
 }
